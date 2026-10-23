@@ -1,0 +1,154 @@
+{
+  "sectors": [
+    {
+      "id": 0,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 1,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 2,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 3,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 4,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 5,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 6,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 7,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 8,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 9,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 10,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 11,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 12,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 13,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 14,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 15,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 16,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 17,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 18,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 19,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 20,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 21,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 22,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 23,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 24,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 25,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 26,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 27,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 28,
+      "floor": 0,
+      "ceiling": 3
+    },
+    {
+      "id": 29,
+      "floor": 0,
+      "ceiling": 3
+    }
+  ]
+}

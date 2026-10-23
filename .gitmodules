@@ -1,0 +1,6 @@
+[submodule "src/zlib"]
+	path = src/zlib
+	url = https://github.com/madler/zlib.git
+[submodule "tests/doctest"]
+	path = tests/doctest
+	url = https://github.com/doctest/doctest

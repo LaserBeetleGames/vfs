@@ -1,0 +1,5 @@
+* text=auto
+
+# test data is compared byte for byte, so line endings are never converted
+tests/fixtures/** -text
+*.vfa binary
