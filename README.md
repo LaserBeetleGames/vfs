@@ -1,7 +1,7 @@
 # vfs
 
 A small, read-only virtual file system for C++20 games, written with sixth-generation consoles in
-mind (Dreamcast, PS2, Xbox) as well as Windows. Folders and archives are mounted by name, and a
+mind: Dreamcast, PS2, Xbox; as well as Windows, Linux, and macOS. Folders and archives are mounted by name, and a
 game reads every file by a path whose first name picks the mount. A development build mounts a
 folder of loose files; a release build mounts an archive in its place, with no change to the code
 that reads them.
