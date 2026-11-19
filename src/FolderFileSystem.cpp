@@ -1,6 +1,7 @@
 #include "vfs/FolderFileSystem.h"
 
 #include <sstream>
+#include <cstdio>
 #include <sys/stat.h>
 
 #include "vfs/FileStream.h"
@@ -11,6 +12,13 @@ namespace vfs {
     // true when the name is a file, not a folder or anything else; a folder opens as a file on some platforms
     static bool IsFile(const string& fileName)
     {
+#if defined(__PS2__)
+        FILE* file = fopen(fileName.c_str(), "rb");
+        if (file == nullptr)
+            return false;
+        fclose(file);
+        return true;
+#endif
         struct stat status;
         return stat(fileName.c_str(), &status) == 0 && (status.st_mode & S_IFMT) == S_IFREG;
     }
