@@ -1,26 +1,31 @@
 #include "vfs/FolderFileSystem.h"
 
+#include <algorithm>
 #include <sstream>
 #include <cstdio>
+#if !defined(NXDK)
 #include <sys/stat.h>
+#endif
 
 #include "vfs/FileStream.h"
 
 using namespace std;
 
 namespace vfs {
-    // true when the name is a file, not a folder or anything else; a folder opens as a file on some platforms
+    // true when the name is a file, not a folder or anything else; a folder opens as a file on some platforms.
+    // On the PlayStation 2 and with the Xbox's nxdk, which has no stat, a name is a file when it opens
     static bool IsFile(const string& fileName)
     {
-#if defined(__PS2__)
+#if defined(_EE) || defined(PS2) || defined(__PS2__) || defined(NXDK)
         FILE* file = fopen(fileName.c_str(), "rb");
         if (file == nullptr)
             return false;
         fclose(file);
         return true;
-#endif
+#else
         struct stat status;
         return stat(fileName.c_str(), &status) == 0 && (status.st_mode & S_IFMT) == S_IFREG;
+#endif
     }
 
     bool FolderFileSystem::Exists(const string& path)
@@ -50,10 +55,14 @@ namespace vfs {
         return stream;
     }
 
+    // with the Xbox's nxdk, whose file calls pass names straight to the kernel, folders are separated by
+    // backslashes
     string FolderFileSystem::GetFileName(const string& path)
     {
-        if (this->folder.empty())
-            return path;
-        return this->folder + "/" + path;
+        string fileName = this->folder.empty() ? path : this->folder + "/" + path;
+#if defined(NXDK)
+        replace(fileName.begin(), fileName.end(), '/', '\\');
+#endif
+        return fileName;
     }
 }

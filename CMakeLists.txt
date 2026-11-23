@@ -13,16 +13,16 @@ project(vfs LANGUAGES C CXX)
 
 option(VFS_BUILD_TESTS "Build the vfs tests" ${PROJECT_IS_TOP_LEVEL})
 
-# zlib, without its gz* file functions
+# zlib, without its gz* file functions or compress and uncompress, which vfs does not call
 if (NOT TARGET zlib)
     set(VFS_ZLIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/zlib)
     if (NOT EXISTS "${VFS_ZLIB_DIR}/zlib.h")
         message(FATAL_ERROR "src/zlib is empty; run: git submodule update --init --recursive")
     endif()
     add_library(zlib STATIC
-        ${VFS_ZLIB_DIR}/adler32.c ${VFS_ZLIB_DIR}/compress.c ${VFS_ZLIB_DIR}/crc32.c ${VFS_ZLIB_DIR}/deflate.c
-        ${VFS_ZLIB_DIR}/infback.c ${VFS_ZLIB_DIR}/inffast.c ${VFS_ZLIB_DIR}/inflate.c ${VFS_ZLIB_DIR}/inftrees.c
-        ${VFS_ZLIB_DIR}/trees.c ${VFS_ZLIB_DIR}/uncompr.c ${VFS_ZLIB_DIR}/zutil.c
+        ${VFS_ZLIB_DIR}/adler32.c ${VFS_ZLIB_DIR}/crc32.c ${VFS_ZLIB_DIR}/deflate.c ${VFS_ZLIB_DIR}/infback.c
+        ${VFS_ZLIB_DIR}/inffast.c ${VFS_ZLIB_DIR}/inflate.c ${VFS_ZLIB_DIR}/inftrees.c ${VFS_ZLIB_DIR}/trees.c
+        ${VFS_ZLIB_DIR}/zutil.c
     )
     target_include_directories(zlib SYSTEM PUBLIC ${VFS_ZLIB_DIR})
 endif()

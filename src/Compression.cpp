@@ -1,11 +1,25 @@
 #include "Compression.h"
 
+#include <cstdlib>
+
 #define ZLIB_CONST
 #include "zlib.h"
 
 using namespace std;
 
 namespace vfs {
+    // zlib's memory comes from the C heap; zlib built without the C library (Z_SOLO, as on the Xbox) has no
+    // allocator of its own
+    static voidpf Allocate(voidpf, uInt count, uInt size)
+    {
+        return calloc(count, size);
+    }
+
+    static void Release(voidpf, voidpf memory)
+    {
+        free(memory);
+    }
+
     uint32_t Crc32(const string& bytes)
     {
         return static_cast<uint32_t>(crc32(0L, reinterpret_cast<const Bytef*>(bytes.data()), static_cast<uInt>(bytes.size())));
@@ -17,6 +31,8 @@ namespace vfs {
 
         // negative window bits: raw deflate, with no header or trailer
         z_stream stream = {};
+        stream.zalloc = Allocate;
+        stream.zfree = Release;
         if (inflateInit2(&stream, -MAX_WBITS) != Z_OK) {
             result.bytes.clear();
             return result;
