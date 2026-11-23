@@ -27,7 +27,7 @@ if (NOT TARGET zlib)
     target_include_directories(zlib SYSTEM PUBLIC ${VFS_ZLIB_DIR})
 endif()
 
-# {fmt}, header only
+# {fmt}, header only; MSVC reads and writes strings as UTF-8, as {fmt} requires
 if (NOT TARGET fmt-header-only)
     set(VFS_FMT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/fmt)
     if (NOT EXISTS "${VFS_FMT_DIR}/include/fmt/format.h")
@@ -36,6 +36,7 @@ if (NOT TARGET fmt-header-only)
     add_library(fmt-header-only INTERFACE)
     target_include_directories(fmt-header-only SYSTEM INTERFACE ${VFS_FMT_DIR}/include)
     target_compile_definitions(fmt-header-only INTERFACE FMT_HEADER_ONLY)
+    target_compile_options(fmt-header-only INTERFACE $<$<CXX_COMPILER_ID:MSVC>:/utf-8>)
 endif()
 
 add_library(vfs STATIC
