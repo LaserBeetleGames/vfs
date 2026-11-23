@@ -1,7 +1,7 @@
 #include "vfs/VirtualFileSystem.h"
 
 #include <algorithm>
-#include <format>
+#include <fmt/format.h>
 
 #include "vfs/Exception.h"
 #include "vfs/Paths.h"
@@ -13,7 +13,7 @@ namespace vfs {
     {
         vector<shared_ptr<IFileSystem>>& layers = this->mounts[LowerCase(NormalisePath(name))];
         if (!layers.empty() && !this->features.layering)
-            throw Exception(format("\"{}\" is mounted already, and layering is off", name));
+            throw Exception(fmt::format("\"{}\" is mounted already, and layering is off", name));
         layers.push_back(std::move(fileSystem));
     }
 

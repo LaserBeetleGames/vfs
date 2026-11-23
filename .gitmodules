@@ -4,3 +4,6 @@
 [submodule "tests/doctest"]
 	path = tests/doctest
 	url = https://github.com/doctest/doctest
+[submodule "src/fmt"]
+	path = src/fmt
+	url = https://github.com/fmtlib/fmt.git

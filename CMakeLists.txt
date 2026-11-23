@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.21)
 project(vfs LANGUAGES C CXX)
 
 # Builds the vfs static library, and zlib with it from the src/zlib submodule unless a zlib target exists
+# already. {fmt} comes from the src/fmt submodule, header only, unless an fmt-header-only target exists
 # already. Built on its own, it also builds the tests:
 #
 #   cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
@@ -26,6 +27,17 @@ if (NOT TARGET zlib)
     target_include_directories(zlib SYSTEM PUBLIC ${VFS_ZLIB_DIR})
 endif()
 
+# {fmt}, header only
+if (NOT TARGET fmt-header-only)
+    set(VFS_FMT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/fmt)
+    if (NOT EXISTS "${VFS_FMT_DIR}/include/fmt/format.h")
+        message(FATAL_ERROR "src/fmt is empty; run: git submodule update --init --recursive")
+    endif()
+    add_library(fmt-header-only INTERFACE)
+    target_include_directories(fmt-header-only SYSTEM INTERFACE ${VFS_FMT_DIR}/include)
+    target_compile_definitions(fmt-header-only INTERFACE FMT_HEADER_ONLY)
+endif()
+
 add_library(vfs STATIC
     src/ArchiveFileSystem.cpp
     src/Compression.cpp
@@ -35,7 +47,7 @@ add_library(vfs STATIC
 )
 target_include_directories(vfs PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_compile_features(vfs PUBLIC cxx_std_20)
-target_link_libraries(vfs PRIVATE zlib)
+target_link_libraries(vfs PRIVATE zlib fmt-header-only)
 
 # built on its own, a cast in C style or an override without the keyword fails the build
 if (PROJECT_IS_TOP_LEVEL)

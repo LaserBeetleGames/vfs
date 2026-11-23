@@ -1,6 +1,6 @@
 #include "vfs/ArchiveFileSystem.h"
 
-#include <format>
+#include <fmt/format.h>
 
 #include "vfs/Exception.h"
 #include "vfs/FileStream.h"
@@ -30,27 +30,27 @@ namespace vfs {
     {
         this->file.open(fileName.c_str(), ios::in | ios::binary);
         if (!this->file.is_open())
-            throw Exception(format("Archive \"{}\" could not be opened", fileName));
+            throw Exception(fmt::format("Archive \"{}\" could not be opened", fileName));
 
         string header = ReadBytes(0, ARCHIVE_HEADER_SIZE);
         if (header.size() != ARCHIVE_HEADER_SIZE || header.compare(0, 4, ARCHIVE_MAGIC) != 0)
-            throw Exception(format("\"{}\" is not a .VFA archive", fileName));
+            throw Exception(fmt::format("\"{}\" is not a .VFA archive", fileName));
 
         uint16_t version = ReadUint16(header, 4);
         if (version != ARCHIVE_VERSION)
-            throw Exception(format("\"{}\" is version {}, only version {} archives can be read", fileName, version, ARCHIVE_VERSION));
+            throw Exception(fmt::format("\"{}\" is version {}, only version {} archives can be read", fileName, version, ARCHIVE_VERSION));
 
         uint32_t count = ReadUint32(header, 8);
         uint32_t tableSize = ReadUint32(header, 12);
         string table = ReadBytes(ARCHIVE_HEADER_SIZE, tableSize);
         if (table.size() != tableSize)
-            throw Exception(format("\"{}\" ends inside its table", fileName));
+            throw Exception(fmt::format("\"{}\" ends inside its table", fileName));
 
         // each entry is padded to a multiple of 4 bytes
         size_t position = 0;
         for (uint32_t i = 0; i < count; i++) {
             if (position + ARCHIVE_ENTRY_SIZE > table.size())
-                throw Exception(format("\"{}\" has a table shorter than its {} entries", fileName, count));
+                throw Exception(fmt::format("\"{}\" has a table shorter than its {} entries", fileName, count));
 
             ArchiveEntry entry;
             entry.offset = ReadUint32(table, position);
@@ -60,13 +60,13 @@ namespace vfs {
             entry.method = static_cast<uint8_t>(table[position + 16]);
             uint16_t pathLength = ReadUint16(table, position + 18);
             if (position + ARCHIVE_ENTRY_SIZE + pathLength > table.size())
-                throw Exception(format("\"{}\" has a table shorter than its {} entries", fileName, count));
+                throw Exception(fmt::format("\"{}\" has a table shorter than its {} entries", fileName, count));
             string path = table.substr(position + ARCHIVE_ENTRY_SIZE, pathLength);
 
             if (entry.method != ARCHIVE_METHOD_STORED && entry.method != ARCHIVE_METHOD_DEFLATE)
-                throw Exception(format("\"{}\" in \"{}\" uses method {}, which cannot be read", path, fileName, entry.method));
+                throw Exception(fmt::format("\"{}\" in \"{}\" uses method {}, which cannot be read", path, fileName, entry.method));
             if (entry.method == ARCHIVE_METHOD_STORED && entry.storedSize != entry.size)
-                throw Exception(format("\"{}\" in \"{}\" is stored with a size other than its own", path, fileName));
+                throw Exception(fmt::format("\"{}\" in \"{}\" is stored with a size other than its own", path, fileName));
 
             this->entries[path] = entry;
             position += (ARCHIVE_ENTRY_SIZE + pathLength + 3) / 4 * 4;
@@ -87,21 +87,21 @@ namespace vfs {
 
         string bytes = ReadBytes(entry.offset, entry.storedSize);
         if (bytes.size() != entry.storedSize) {
-            LogError(format("\"{}\" in \"{}\" is cut short", path, this->fileName));
+            LogError(fmt::format("\"{}\" in \"{}\" is cut short", path, this->fileName));
             return "";
         }
 
         if (entry.method == ARCHIVE_METHOD_DEFLATE) {
             InflateResult inflated = Inflate(bytes, entry.size);
             if (!inflated.valid) {
-                LogError(format("\"{}\" in \"{}\" could not be inflated", path, this->fileName));
+                LogError(fmt::format("\"{}\" in \"{}\" could not be inflated", path, this->fileName));
                 return "";
             }
             bytes = std::move(inflated.bytes);
         }
 
         if (Crc32(bytes) != entry.crc) {
-            LogError(format("\"{}\" in \"{}\" fails its CRC-32 check", path, this->fileName));
+            LogError(fmt::format("\"{}\" in \"{}\" fails its CRC-32 check", path, this->fileName));
             return "";
         }
         return bytes;

@@ -29,7 +29,8 @@ needs nothing from the platform but opening, seeking and reading one file. The f
 
 ## Building
 
-zlib 1.3.2 and [doctest](https://github.com/doctest/doctest) are submodules:
+zlib 1.3.2, [{fmt}](https://github.com/fmtlib/fmt) 12.1.0 and [doctest](https://github.com/doctest/doctest)
+are submodules:
 
 ```bash
 git clone --recursive https://github.com/LaserBeetleGames/vfs.git
@@ -43,7 +44,9 @@ target_link_libraries(my_game PRIVATE vfs)
 ```
 
 It builds zlib from `src/zlib` as the `zlib` target, unless a `zlib` target exists already (a
-platform's own port, say), in which case it uses that. Built on its own, it also builds the tests:
+platform's own port, say), in which case it uses that. In the same way it uses {fmt} from `src/fmt`,
+header only, as the `fmt-header-only` target, unless one exists already. Built on its own, it also
+builds the tests:
 
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
@@ -53,8 +56,8 @@ ctest --test-dir build --build-config Release
 
 ### Platforms
 
-vfs is standard C++20 with no platform calls beyond the C runtime's `stat`, and needs a compiler
-with `std::format`. GitHub Actions builds it and runs the C++ and Node tests on every push
+vfs is standard C++20 with no platform calls beyond the C runtime's `stat`, and formats its
+messages with {fmt}, so it needs no `std::format`. GitHub Actions builds it and runs the C++ and Node tests on every push
 (`.github/workflows/ci.yml`):
 
 | Platform | Compiler |
